@@ -1,5 +1,6 @@
 package id.ten.auth.kotlinjwt.models
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -21,5 +22,11 @@ class User {
 
     @Column
     var password = ""
+        get() = field
+        set(value) {
+            val passwordEncoder= BCryptPasswordEncoder()
+            field = passwordEncoder.encode(value)
+        }
+
 
 }
