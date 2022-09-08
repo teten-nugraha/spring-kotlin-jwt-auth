@@ -1,5 +1,7 @@
 package id.ten.auth.kotlinjwt.controllers
 
+import id.ten.auth.kotlinjwt.dtos.LoginDto
+import id.ten.auth.kotlinjwt.dtos.Message
 import id.ten.auth.kotlinjwt.dtos.RegisterDto
 import id.ten.auth.kotlinjwt.models.User
 import id.ten.auth.kotlinjwt.service.UserService
@@ -24,4 +26,12 @@ class AuthController(private val userService: UserService) {
         return ResponseEntity.ok(this.userService.save(user))
     }
 
+    @PostMapping("login")
+    fun login(@RequestBody payload: LoginDto): ResponseEntity<Any> {
+
+        val user = this.userService.findByEmail(payload.email)
+            ?: return ResponseEntity.badRequest().body(Message("user not found"))
+
+        return ResponseEntity.ok(user)
+    }
 }
