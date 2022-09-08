@@ -1,5 +1,6 @@
 package id.ten.auth.kotlinjwt.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -22,6 +23,7 @@ class User {
 
     @Column
     var password = ""
+        @JsonIgnore
         get() = field
         set(value) {
             val passwordEncoder= BCryptPasswordEncoder()

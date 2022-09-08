@@ -7,7 +7,10 @@ import id.ten.auth.kotlinjwt.models.User
 import id.ten.auth.kotlinjwt.service.UserService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.apache.coyote.Response
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CookieValue
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -54,5 +57,20 @@ class AuthController(private val userService: UserService) {
         response.addCookie(cookie)
 
         return ResponseEntity.ok(Message("Login Sucess"))
+    }
+
+    @GetMapping("profile")
+    fun profile(@CookieValue("jwt") jwt: String): ResponseEntity<Any> {
+        try {
+            if(jwt == null) {
+                return ResponseEntity.status(401).body(Message("unauthenticated"))
+            }
+
+            val body = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
+
+            return ResponseEntity.ok(this.userService.getUserById(body.issuer.toInt()))
+        }catch (e: Exception) {
+            return ResponseEntity.status(401).body(Message("unauthenticated"))
+        }
     }
 }
