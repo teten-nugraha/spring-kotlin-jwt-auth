@@ -73,4 +73,14 @@ class AuthController(private val userService: UserService) {
             return ResponseEntity.status(401).body(Message("unauthenticated"))
         }
     }
+
+    @PostMapping("logout")
+    fun logout(response: HttpServletResponse): ResponseEntity<Any> {
+        val cookie = Cookie("jwt", "")
+        cookie.maxAge = 0
+
+        response.addCookie(cookie)
+
+        return ResponseEntity.ok(Message("Logout Success"))
+    }
 }
